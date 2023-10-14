@@ -461,7 +461,14 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 })
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.text === 'what is my tab_id?') {
+  if (request.type === 'getOptions') {
+    console.log('GET ADDON OPTIONS', request.addon)
+    chrome.storage.local.get([request.addon + 'Options'], function (theResultOptions) {
+      console.log('sending result', theResultOptions[request.addon + 'Options'])
+      sendResponse(theResultOptions[request.addon + 'Options'])
+    })
+    return true
+  } else if (request.text === 'what is my tab_id?') {
     // wait 2 seconds
     await new Promise(resolve => setTimeout(resolve, 2000)) // 3 sec
     console.log('received message from content script', sender.tab.id)

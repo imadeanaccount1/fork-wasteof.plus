@@ -27,8 +27,8 @@
       "id": "preset",
       "dynamicVisibility": [
         {
-              "id": "playSound",
-              "values": [true]
+          "id": "playSound",
+          "values": [true]
         }
       ],
       "options": ["Cha-Ching", "Discord", "Zap", "Custom"],
