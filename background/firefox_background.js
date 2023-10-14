@@ -463,11 +463,14 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   if (request.type === 'getOptions') {
     console.log('GET ADDON OPTIONS', request.addon)
-    chrome.storage.local.get([request.addon + 'Options'], function (theResultOptions) {
-      console.log('sending result', theResultOptions[request.addon + 'Options'])
-      sendResponse(theResultOptions[request.addon + 'Options'])
-    })
-    return true
+    const val = (await chrome.storage.local.get([request.addon + 'Options']))[request.addon + 'Options']
+    console.log('got addon options', await val)
+    console.log('is firefox?', typeof InstallTrigger !== 'undefined')
+    if (!(typeof InstallTrigger !== 'undefined')) {
+      console.log('is not firefox')
+      return true
+    }
+    return val
   } else if (request.text === 'what is my tab_id?') {
     // wait 2 seconds
     await new Promise(resolve => setTimeout(resolve, 2000)) // 3 sec
