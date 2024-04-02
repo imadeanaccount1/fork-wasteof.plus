@@ -1,7 +1,9 @@
 console.log('autolovePosts loaded')
 
 const oldHref = window.location.href
+console.log("autolovePosts", document.querySelector('.vfm__container').querySelector('button.bg-primary-500'))
 document.querySelector('.vfm__container').querySelector('button.bg-primary-500').addEventListener('click', () => {
+  console.log("autolovePosts CLICKED")
   setTimeout(function () {
     console.log(window.location.href)
     if (window.location.href !== oldHref) {
@@ -38,5 +40,5 @@ document.querySelector('.vfm__container').querySelector('button.bg-primary-500')
     } else {
       console.log('post didn\'t post')
     }
-  }, 1500)
+  }, 2500)
 })

@@ -72,41 +72,81 @@ window.addEventListener('message', function (event) {
 
 // document.body.appendChild(routeChangeScript)
 
-function addonRun () {
-  import(chrome.runtime.getURL('../debug.js')).then((debug) => {
-    debug.log('addon run user statuses - after reloa going to execute')
-    // wait 3 seconds
+// function addonRun () {
+//   import(chrome.runtime.getURL('../debug.js')).then((debug) => {
+//     debug.log('addon run user statuses - after reloa going to execute')
+//     // wait 3 seconds
+
+//     new Promise(resolve => setTimeout(resolve, 800)).then(async () => {
+//       debug.log('it\'s been 3 seconds since reload12')
+//       const profilePictures = document.querySelectorAll('img.border-2')
+//       debug.log('pictures', profilePictures)
+
+//       const onlineIndicator = document.createElement('div')
+//       onlineIndicator.classList.add('onlineindicator1')
+//       debug.log('pictures')
+
+//       const setUserStatusesUrl = chrome.runtime.getURL('./addons/addUserStatuses/lib/setUserStatuses.js')
+//       const contentMain = await import(setUserStatusesUrl)
+//       contentMain.setUserStatuses(profilePictures, onlineIndicator, false)
+//     // addon(false)
+//     }) // 3 sec
+//   })
+//   // console.log('it\'s been 3 seconds since reload')
+//   // addonTwo(false)
+// }
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  console.log('message', message)
+  sendResponse({ message: 'hello' })
+  if (message.action === 'reload') {
+    console.log('RELOADING!!! user statuses')
+    addon(false)
 
     new Promise(resolve => setTimeout(resolve, 800)).then(async () => {
-      debug.log('it\'s been 3 seconds since reload12')
+      console.log('it\'s been 3 seconds since reload12')
       const profilePictures = document.querySelectorAll('img.border-2')
-      debug.log('pictures', profilePictures)
+      console.log('pictures', profilePictures)
 
       const onlineIndicator = document.createElement('div')
       onlineIndicator.classList.add('onlineindicator1')
-      debug.log('pictures')
+      console.log('pictures')
 
       const setUserStatusesUrl = chrome.runtime.getURL('./addons/addUserStatuses/lib/setUserStatuses.js')
       const contentMain = await import(setUserStatusesUrl)
       contentMain.setUserStatuses(profilePictures, onlineIndicator, false)
     // addon(false)
     }) // 3 sec
-  })
-  // console.log('it\'s been 3 seconds since reload')
-  // addonTwo(false)
-}
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  import(chrome.runtime.getURL('../debug.js')).then((debug) => {
-    debug.log('message', message)
-    sendResponse({ message: 'hello' })
-    if (message.action === 'reload') {
-      debug.log('RELOADING!!! user statuses')
-      addon(false)
-      addonRun()
-      debug.log('finsihed reloading addon user statises')
-    }
-  })
+    // wait 3 seconds
+    new Promise(resolve => setTimeout(resolve, 0)).then(async () => {
+      console.log('it\'s been 3 seconds since reload')
+      // addonRun()
+      const utilsUrl = chrome.runtime.getURL('../utils.js')
+
+      const utils = await import(utilsUrl)
+
+      await utils.waitForElm('img.border-2', async (addedNodesFromWait) => {
+        newNodes1 += 1
+        console.log('newNodes1', newNodes1, 'element has been updated1', addedNodesFromWait)
+        newNodes1 = 0
+        console.log('element has been updated, rerunning addon')
+
+        // const profilePictures = document.querySelectorAll('img.border-2')
+        console.log('picturesfromcallback', addedNodesFromWait)
+
+        const onlineIndicator = document.createElement('div')
+        onlineIndicator.classList.add('onlineindicator1')
+        console.log('pictures')
+
+        const setUserStatusesUrl = chrome.runtime.getURL('./addons/addUserStatuses/lib/setUserStatuses.js')
+        const contentMain = await import(setUserStatusesUrl)
+        contentMain.setUserStatuses(addedNodesFromWait, onlineIndicator, true)
+      // addon(false)
+      })
+      console.log('finsihed reloading addon user statises')
+    })
+  }
 })
 
 let newNodes1 = 0

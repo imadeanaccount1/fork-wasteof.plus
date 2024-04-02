@@ -1,5 +1,6 @@
 function addon () {
   chrome.runtime.sendMessage({ type: 'getOptions', addon: 'bigEmojis' }, function (response) {
+    console.log('response from offscreen', response)
     document.querySelectorAll('.emoji').forEach((el) => {
       console.log(el.parentElement.textContent)
       if (el.parentElement.textContent === '') {

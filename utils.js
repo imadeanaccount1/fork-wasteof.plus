@@ -18,8 +18,13 @@ function waitForElm (selector, debug, callback) {
               node.classList.contains('actionDropdownItem') ||
               node.classList.contains('commentActionDropdown') ||
               node.classList.contains('readIndicator') ||
+              node.classList.contains('hoverCard') ||
+              node.classList.contains('hoverArea') ||
               node.classList.contains('replyIcon') ||
-              node.classList.contains('dropdownIcon')
+              node.classList.contains('dropdownIcon') ||
+              node.classList.contains('ProseMirror') ||
+              node.classList.contains('userstatusicon') ||
+              node.nodeType === Node.TEXT_NODE
               ) {
                 continue
               } else {
@@ -28,30 +33,31 @@ function waitForElm (selector, debug, callback) {
             }
           }
           if (elementsThatDidntHaveClass) {
-            debug.log('observer ended up!')
+            console.log('observer ended up!')
             resolve(document.querySelector(selector))
             if (callback) {
-              debug.log('mutations', mutations)
+              console.log('mutations', mutations)
               for (const record of mutations) {
-                debug.log('mutation record', record)
+                console.log('mutation record', record)
                 const nodelist = []
                 for (const node of record.addedNodes) {
-                  debug.log('onenode', node, node.nodeType === Node.TEXT_NODE)
+                  console.log('onenode', node, node.nodeType === Node.TEXT_NODE)
                   if (node.nodeType !== Node.TEXT_NODE) {
-                    if (node.matches('div.border-2.mb-4')) {
-                      debug.log('pushing node', node.querySelector('a > div.w-full > a > img.border-2'))
+                    console.log('onenode checking', node.matches('div.border-2.rounded-xl'))
+                    if (node.matches('div.border-2.rounded-xl')) {
+                      console.log('pushing node', node.querySelector('a > div.w-full > a > img.border-2'))
                       nodelist.push(node.querySelector('a > div.w-full > a > img.border-2'))
                     }
                   }
-                }
-                if (nodelist.length > 0) {
-                  callback(nodelist)
-                } else {
-                  debug.log('can\'t call back')
+                  if (node === record.addedNodes[record.addedNodes.length - 1]) {
+                    if (nodelist.length > 0) {
+                      callback(nodelist)
+                    } else {
+                      console.log('can\'t call back', record.addedNodes)
+                    }
+                  }
                 }
               }
-            } else {
-              observer.disconnect()
             }
           }
         }
